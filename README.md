@@ -11,7 +11,7 @@ pip install asyncmy
 pip install python-dotenv
 
 # tạo cơ sở dữ liệu trên MySQL, chú ý chọn bảng mã utf8_unicode_ci khi tạo cở sở dữ liệu school_db_new
-mysqldump school_db_new > SQL\mysql_dump_data_17-7-2025.sql
+mysql -u username -p  school_db_new< SQL\mysql_dump_data_17-7-2025.sql  
 
 
 # Chạy chương trình
