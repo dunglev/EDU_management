@@ -11,6 +11,10 @@ pip install python-dotenv
 # Chạy chương trình
 uvicorn main:app --reload --log-level debug --host 0.0.0.0 --port 8000
 
+# usename và passowrd chạy thử
+    usename:admin    
+    passowrd:123
+
 #bổ sung thêm chức năng
     1-Thống kê số thí sinh: 
         +Điểm tốt nghiệp loại giỏi
