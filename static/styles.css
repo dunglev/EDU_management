@@ -1,0 +1,5 @@
+.menu-item:hover { background-color: #e5e7eb; }
+#content { min-height: 400px; }
+#progress-container { display: none; }
+#progress-bar { transition: width 0.5s ease-in-out; }
+#chart-container canvas { max-height: 300px; }

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col font-sans">
+    <!-- Header with Dropdown Menus -->
+    <nav class="bg-[#1e3a8a] text-white p-4 sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="text-2xl font-bold tracking-tight flex items-center">
+                <svg class="w-8 h-8 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18s-3.332.477-4.5 1.253"></path>
+                </svg>
+                Education Management
+            </div>            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-6" id="desktop-menu">
+                <!-- Top Menu Dropdown -->
+                <div class="relative group">                    
+                    <button class="px-5 py-3 rounded-lg hover:bg-[#3b82f6] focus:bg-[#3b82f6] transition flex items-center font-medium text-lg" onclick="toggleDropdown('top-menu')" onkeydown="handleKeydown(event, 'top-menu')">
+                        Menu <span class="ml-2 text-sm transform scale-75">▼</span>
+                    </button>
+                    <div id="top-menu" class="absolute hidden bg-white text-gray-800 rounded-lg shadow-xl mt-2 w-48 border border-gray-200 opacity-0 transform -translate-y-2 transition-all duration-200">
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadHome()">Home</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadLogin()" id="login-menu">Đăng nhập</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadRegister()" id="register-menu">Đăng ký</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition hidden" onclick="logout()" id="logout-menu">Đăng xuất</a>
+                    </div>
+                </div>
+                <!-- Import Functions Dropdown -->
+                <div class="relative group" id="desktop-menu-2">
+                    <button class="px-5 py-3 rounded-lg hover:bg-[#3b82f6] focus:bg-[#3b82f6] transition flex items-center font-medium text-lg" onclick="toggleDropdown('import-menu')" onkeydown="handleKeydown(event, 'import-menu')">
+                        Nhập dữ liệu <span class="ml-2 text-sm transform scale-75">▼</span>
+                    </button>
+                    <div id="import-menu" class="absolute hidden bg-white text-gray-800 rounded-lg shadow-xl mt-2 w-56 border border-gray-200 opacity-0 transform -translate-y-2 transition-all duration-200">
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadImportData('import-diem-totnghiep','Nhập dữ liệu điểm thi tốt nghiệp từ file Excel')" id="import-menu-item">Nhập điểm tốt nghiệp</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadImportData('import-teacher','Nhập dữ liệu giảng dạy của giáo viên theo lớp từ file Excel')" id="import-teacher-menu">Nhập dữ liệu giáo viên theo lớp</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadImportData('import-exam-block','Nhập danh mục khối thi đại học từ file Excel')" id="import-menu-examblock">Nhập danh mục khối thi đại học</a>                        
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadImportData('import-score-avg','Nhập điểm Trung bình Quốc gia theo mỗi môn học')" id="import-score-avg-menu">Nhập điểm trung bình toàn quốc</a>
+                    </div>
+                </div>
+                <!-- Report Functions Dropdown -->
+                <div class="relative group" id="desktop-menu-3">
+                    <button class="px-5 py-3 rounded-lg hover:bg-[#3b82f6] focus:bg-[#3b82f6] transition flex items-center font-medium text-lg" onclick="toggleDropdown('report-menu')" onkeydown="handleKeydown(event, 'report-menu')">
+                        Báo cáo/Thống kê <span class="ml-2 text-sm transform scale-75">▼</span>
+                    </button>
+                    <div id="report-menu" class="absolute hidden bg-white text-gray-800 rounded-lg shadow-xl mt-2 w-56 border border-gray-200 opacity-0 transform -translate-y-2 transition-all duration-200">
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadSearch()" id="search-menu">Tìm kiếm và lọc dữ liệu</a>             
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadSTC()" id="STC-report-menu">Bảng phân công giáo viên theo lớp và môn học</a>               
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadStudentList(1)" id="student-list-menu">Bảng điểm tốt nghiệp toàn trường</a>                        
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadClassStats()" id="class-stats-menu">Kết quả điểm Cao/Thấp/TB theo Lớp</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadTopStudentsByBlock()" id="class-StudentsByBlock-menu">Kết quả điểm Cao/Thấp/TB theo khối</a>                        
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadTeacherReport()" id="teacher-report-menu">Tổng hợp kết quả theo giáo viên</a>               
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadScoreDistribution()" id="score-distribution-menu">Xem phổ điểm các môn</a>                        
+                    </div>
+                </div>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden flex items-center px-3 py-2 rounded-lg hover:bg-[#3b82f6] transition" onclick="toggleMobileMenu()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden hidden absolute top-16 left-0 w-full bg-white text-gray-800 shadow-xl border-t border-gray-200 z-40">
+                <!-- Mobile Top Menu -->
+                <div class="border-b border-gray-200">
+                    <button class="w-full text-left px-4 py-3 font-medium text-lg flex justify-between items-center hover:bg-[#f3f4f6] transition" onclick="toggleDropdown('mobile-top-menu')">
+                        Menu <span class="text-sm transform scale-75">▼</span>
+                    </button>
+                    <div id="mobile-top-menu" class="hidden pl-4">
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadHome()">Home</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadLogin()" id="login-menu-mobile">Đăng nhập</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadRegister()" id="register-menu-mobile">Đăng ký</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition hidden" onclick="logout()" id="logout-menu-mobile">Đăng xuất</a>
+                    </div>
+                </div>
+                <!-- Mobile Import Menu -->
+                <div class="border-b border-gray-200">
+                    <button class="w-full text-left px-4 py-3 font-medium text-lg flex justify-between items-center hover:bg-[#f3f4f6] transition" onclick="toggleDropdown('mobile-import-menu')">
+                        Nhập dữ liệu <span class="text-sm transform scale-75">▼</span>
+                    </button>
+                    <div id="mobile-import-menu" class="hidden pl-4">
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadImportData('import-diem-totnghiep','Nhập dữ liệu điểm thi tốt nghiệp từ file Excel')" id="import-menu-item-mobile">Nhập điểm tốt nghiệp</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadImportData('import-teacher','Nhập dữ liệu giảng dạy của giáo viên theo lớp từ file Excel')" id="import-teacher-menu-mobile">Nhập dữ liệu giáo viên theo lớp</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadImportData('import-exam-block','Nhập danh mục khối thi đại học từ file Excel')" id="import-menu-examblock-mobile">Nhập danh mục khối thi đại học</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadImportData('import-score-avg','Nhập điểm Trung bình Quốc gia theo mỗi môn học')" id="import-score-avg-menu-mobile">Nhập điểm trung bình toàn quốc</a>
+                    </div>
+                </div>
+                <!-- Mobile Report Menu -->
+                <div>
+                    <button class="w-full text-left px-4 py-3 font-medium text-lg flex justify-between items-center hover:bg-[#f3f4f6] transition" onclick="toggleDropdown('mobile-report-menu')">
+                        Báo cáo/Thống kê <span class="text-sm transform scale-75">▼</span>
+                    </button>
+                    <div id="mobile-report-menu" class="hidden pl-4">
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadSearch()" id="search-menu-mobile">Tìm kiếm và lọc dữ liệu</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadSTC()" id="STC-report-menu-mobile">Bảng phân công giáo viên theo lớp và môn học</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadStudentList(1)" id="student-list-menu-mobile">Bảng điểm tốt nghiệp toàn trường</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadClassStats()" id="class-stats-menu-mobile">Kết quả điểm Cao/Thấp/TB theo Lớp</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadTopStudentsByBlock()" id="class-StudentsByBlock-menu-mobile">Kết quả điểm Cao/Thấp/TB theo khối</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadTeacherReport()" id="teacher-report-menu-mobile">Tổng hợp kết quả theo giáo viên</a>
+                        <a href="#" class="menu-item block px-4 py-3 hover:bg-[#f3f4f6] transition" onclick="loadScoreDistribution()" id="score-distribution-menu-mobile">Xem phổ điểm các môn</a>
+                    </div>
+                </div>
+            </div>
+        </div>    
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="container mx-auto mt-8 p-6 flex-1">
+        <div class="bg-white rounded-xl shadow-lg p-8" id="content">
+            <section class="bg-blue-900 text-white py-20">
+                <div class="container mx-auto px-4 text-center">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Hệ thống Quản lý Trường học</h1>
+                    <p class="text-lg md:text-xl mb-6">Giải pháp toàn diện cho quản lý giáo dục hiện đại</p>
+                    <button id="getStartedBtn" class="bg-white text-blue-900 px-6 py-3 rounded-lg font-medium hover:bg-gray-100" onclick="loadLogin()">Bắt đầu ngay</button>
+                </div>
+            </section>
+
+            <!-- Giới thiệu hệ thống -->
+            <section class="py-16 bg-white">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Hệ thống dùng để làm gì?</h2>
+                    <p class="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                        Hệ thống Quản lý Trường học giúp các cơ sở giáo dục quản lý thông tin học sinh, giáo viên, điểm số, và tạo báo cáo một cách hiệu quả, bảo mật.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-gray-50 p-6 rounded-lg shadow hover:shadow-lg transition">
+                            <h3 class="text-xl font-semibold text-blue-600 mb-2">Quản lý học sinh</h3>
+                            <p class="text-gray-600">Lưu trữ thông tin cá nhân, điểm số, và kết quả thi tốt nghiệp.</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg shadow hover:shadow-lg transition">
+                            <h3 class="text-xl font-semibold text-blue-600 mb-2">Xếp loại giáo viên</h3>
+                            <p class="text-gray-600">Xếp loại, đánh giá chất lượng giáo viên theo kết quả thi tốt nghiệp của học sinh do họ trực tiếp giảng dạy.</p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-lg shadow hover:shadow-lg transition">
+                            <h3 class="text-xl font-semibold text-blue-600 mb-2">Báo cáo thông minh</h3>
+                            <p class="text-gray-600">Tạo báo cáo điểm, thống kê, lọc dữ liệu và xuất Excel một cách dễ dàng.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>        
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[#1e3a8a] text-white p-4 mt-auto">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">© 2025 Education Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleDropdown(menuId) {
+            console.log(`Toggling dropdown: ${menuId}`); // Debug
+            const menu = document.getElementById(menuId);
+            if (!menu) {
+                console.error(`Menu with ID ${menuId} not found`);
+                return;
+            }
+            const isHidden = menu.classList.contains('hidden');
+            // Ẩn tất cả các dropdown khác
+            document.querySelectorAll('.absolute, .pl-4').forEach(d => {
+                if (d.id !== menuId) {
+                    d.classList.add('hidden', 'opacity-0', '-translate-y-2');
+                }
+            });
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                setTimeout(() => {
+                    menu.classList.remove('opacity-0', '-translate-y-2');
+                }, 10);
+            } else {
+                menu.classList.add('hidden', 'opacity-0', '-translate-y-2');
+            }
+        }
+
+        function toggleMobileMenu() {
+            console.log('Toggling mobile menu'); // Debug
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (!mobileMenu) {
+                console.error('Mobile menu not found');
+                return;
+            }
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                document.querySelectorAll('.pl-4').forEach(d => {
+                    d.classList.add('hidden', 'opacity-0', '-translate-y-2');
+                });
+            }
+        }
+
+        function handleKeydown(event, menuId) {
+            console.log(`Keydown on ${menuId}: ${event.key}`); // Debug
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleDropdown(menuId);
+            }
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                const menu = document.getElementById(menuId);
+                const items = menu.querySelectorAll('.menu-item');
+                if (items.length > 0) {
+                    items[0].focus();
+                }
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            const isClickInside = event.target.closest('.group') || 
+                                 event.target.closest('#mobile-menu') || 
+                                 event.target.closest('button[onclick="toggleMobileMenu()"]');
+            console.log('Click event, isClickInside:', !!isClickInside); // Debug
+            if (!isClickInside) {
+                document.querySelectorAll('.absolute, .pl-4').forEach(d => {
+                    d.classList.add('hidden', 'opacity-0', '-translate-y-2');
+                });
+                document.getElementById('mobile-menu').classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                console.log('Escape key pressed'); // Debug
+                document.querySelectorAll('.absolute, .pl-4').forEach(d => {
+                    d.classList.add('hidden', 'opacity-0', '-translate-y-2');
+                });
+                document.getElementById('mobile-menu').classList.add('hidden');
+            }
+        });
+    </script>
+    <script src="static/script.js"></script>
+</body>
+</html>
